@@ -13,6 +13,11 @@ Training metric model for each query.
 Prepare the testing data.
 4. queryRerank.m  
 Reranking for each query.
+5. doMetricRerank.m and testDoMetricRerank.m  
+Eqch qurey reranking with each kind of metric.
+6. testSelectMetric.m  
+Test the best select metric for reranking.
+
 
 ## VERSION
 v0.1 Aborn Jiang (aborn.jiang@foxmail.com)
