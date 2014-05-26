@@ -11,6 +11,9 @@ Pls read the file
 ## Training dataset
 All trainig dataset comes from the MSRAMM dataset. 
 
+## Dependency
+mLMNN2.4
+
 ## Test data
 All testing dataset comes form the WebQueries dataset. Each query test
 data is stored in $ABSPATH/$dataSetName/$featurename/$data$queryno.mat.

@@ -16,8 +16,8 @@ dataSetName = 'webquery';
 dataSetNameNeg = 'msramm';
 imgClass   = get_dataSetInfo(dataSetName, 'imgClass');
 
-feature = 'gist';
-%% feature = 'SCD';
+%% feature = 'gist';
+feature = 'SCD';
 MetricPath = ['data/model/',feature,'/'];              
 topN = 50;
 scalevalue = true;
