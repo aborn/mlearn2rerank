@@ -5,7 +5,8 @@ mlearn2rerank
 This project aims to use metric learning to image search reranking.
 
 ## How to use code
-Pls read the file USAGE.md
+Pls read the file
+[USAGE.md](https://github.com/aborn/mlearn2rerank/blob/master/doc/USAGE.md)
 
 ## Training dataset
 All trainig dataset comes from the MSRAMM dataset. 
