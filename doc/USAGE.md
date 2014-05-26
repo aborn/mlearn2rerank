@@ -19,5 +19,5 @@ Eqch qurey reranking with each kind of metric.
 Test the best select metric for reranking.
 
 
-## VERSION
-v0.1 Aborn Jiang (aborn.jiang@foxmail.com)
+## UPDATE
+2014-05-26 Aborn Jiang (aborn.jiang@foxmail.com)
