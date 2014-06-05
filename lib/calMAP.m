@@ -34,11 +34,11 @@ if strcmp(dataSetName,'webquery')
         end
         [tf,loc] = ismember(expKind, apALL(:,1));
         for i=1:size(tf,1)
-            if if(i,1) == 1
+            if tf(i,1) == 1
                     mAP(1, feaNo) = mAP(1, feaNo) + apALL(loc(i,1), 2);
             end
         end
-        mAP(1, feaNo) = mAP(1, feaNo)/sum(tf);
+        mAP(1, feaNo) = mAP(1, feaNo)/sum(tf(:,1));
     end
 end
 

@@ -16,8 +16,8 @@ dataSetName    = 'webquery';
 dataSetNameNeg = 'msramm';
 imgClass       = get_dataSetInfo(dataSetName, 'imgClass');
 
-%feature = 'gist';
-feature = 'SCD';
+feature = 'gist';
+%feature = 'SCD';
 testrange='all';
 % testrange='topN';
 MetricPath = ['data/model/',feature,'/'];              
@@ -100,10 +100,10 @@ for i = 1:size(imgClass,1)            % for each query
         improved = improved + 1;
     end
 
-    apALL(i,1) = queryNo;
-    apALL(i,2) = rs.rankAP;
-    apALL(i,3) = rs.rerankAP;
-    apALL(i,4) = rs.metricAP;
+    apALL(expNO,1) = queryNo;
+    apALL(expNO,2) = rs.rankAP;
+    apALL(expNO,3) = rs.rerankAP;
+    apALL(expNO,4) = rs.metricAP;
     totalAPrank = totalAPrank + rs.rankAP;
     totalAPknn = totalAPknn + rs.rerankAP;
     totalAPmetric = totalAPmetric + rs.metricAP;
@@ -122,4 +122,15 @@ end
 
 percent = improved / expNO;
 disp(['percent=', num2str(percent), '  improved=', num2str(improved), ...
-     ' experiment number=', num2str(expNO)]);
+      ' experiment number=', num2str(expNO)]);
+
+disp(['ss=',num2str(size(apALL,1))]);
+apALL = apALL(1:expNO, :);
+disp(['ss=',num2str(size(apALL,1))]);
+
+abc = zeros(size(apALL,1), 2);
+abc(:,1)=apALL(:,1);
+for i=2:4
+    abc(:,2)=apALL(:,i);
+    calMAP(abc);
+end
