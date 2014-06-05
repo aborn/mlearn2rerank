@@ -16,8 +16,8 @@ dataSetName    = 'webquery';
 dataSetNameNeg = 'msramm';
 imgClass       = get_dataSetInfo(dataSetName, 'imgClass');
 
-feature = 'gist';
-% feature = 'SCD';
+%feature = 'gist';
+feature = 'SCD';
 testrange='all';
 % testrange='topN';
 MetricPath = ['data/model/',feature,'/'];              
@@ -45,6 +45,7 @@ expNO = 0;               % experiment number
 totalAPrank = 0;         % use for calculate mAP
 totalAPmetric = 0;
 totalAPknn = 0;
+apALL = zeros(size(imgClass,1), 4);
 %% do select best metric for reranking.
 for i = 1:size(imgClass,1)            % for each query
     queryNo = imgClass(i,1);
@@ -91,17 +92,21 @@ for i = 1:size(imgClass,1)            % for each query
     index = find(map==MetricModel);
     metricAP = rsRerank(i, index + 2);
     
-    if rs.metricAP ~= metricAP
-        disp(['fatal error, metric AP doesnot match.'])
-    end
+    % if rs.metricAP ~= metricAP
+    %     disp(['fatal error, metric AP doesnot match.'])
+    % end
     
-    if metricAP > rsRerank(i, 2) && metricAP > rsRerank(i, 1)
+    if rs.metricAP > rs.rankAP && rs.metricAP > rs.rerankAP
         improved = improved + 1;
     end
 
-    totalAPrank = totalAPrank + rsRerank(i, 1);
-    totalAPknn = totalAPknn + rsRerank(i, 2);
-    totalAPmetric = totalAPmetric + metricAP;
+    apALL(i,1) = queryNo;
+    apALL(i,2) = rs.rankAP;
+    apALL(i,3) = rs.rerankAP;
+    apALL(i,4) = rs.metricAP;
+    totalAPrank = totalAPrank + rs.rankAP;
+    totalAPknn = totalAPknn + rs.rerankAP;
+    totalAPmetric = totalAPmetric + rs.metricAP;
     
     disp(['***  mAP rank = ', num2str(totalAPrank/expNO), ...
           '*** mAP knn =', num2str(totalAPknn/expNO), ...

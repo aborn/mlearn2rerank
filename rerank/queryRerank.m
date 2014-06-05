@@ -103,7 +103,7 @@ if strcmp(pars.range, 'topN') == 1
 elseif strcmp(pars.range, 'all') == 1
     [~, rs.rerankAP] = knnRerank(pars.k, data(1:end,:), label(1:end,:));
 else
-    disp('pars.range can only be \'topN\' or \'all\'');
+    disp('pars.range can only be ''topN'' or ''all'' ');
     pause(1000000000000);
 end
 
