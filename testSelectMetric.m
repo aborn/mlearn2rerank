@@ -2,29 +2,31 @@
 % testSelectMetric.m
 % test the performance of selectMetric function
 % please run doMetricRerank.m before running
-% 2014-05-12
+% update: 2014-06-05
 %--------------------------------------------------------------------------
 
 tic;
 clc;
 clear;
 
+%% basic settings
 disp('start to do select rerank.');
 setpath;
-
-dataSetName = 'webquery';
+dataSetName    = 'webquery';
 dataSetNameNeg = 'msramm';
-imgClass   = get_dataSetInfo(dataSetName, 'imgClass');
+imgClass       = get_dataSetInfo(dataSetName, 'imgClass');
 
-%% feature = 'gist';
-feature = 'SCD';
+feature = 'gist';
+% feature = 'SCD';
+testrange='all';
+% testrange='topN';
 MetricPath = ['data/model/',feature,'/'];              
 topN = 50;
 scalevalue = true;
 method = 'std';
 k = 5;
 
-% load negative samples.
+%% load negative samples.
 if scalevalue
     metricRerankRS = ['mat/',dataSetName,'_',feature,'_scale.mat'];
     loadName = ['./data/negative/',dataSetNameNeg,'_',feature,'_scale.mat'];
@@ -32,15 +34,15 @@ else
     metricRerankRS = ['mat/',dataSetName,'_',feature,'.mat'];
     loadName = ['./data/negative/',dataSetNameNeg,'_',feature,'.mat'];
 end
-load(metricRerankRS);
-load(loadName);
+load(metricRerankRS);    % reranking results
+load(loadName);          % negative samples
 
 rsRerank = rs.rsRerank;
 improved = 0;
 map   = rs.map;
-expNO = 0;            % experiment number
+expNO = 0;               % experiment number
 
-totalAPrank = 0;
+totalAPrank = 0;         % use for calculate mAP
 totalAPmetric = 0;
 totalAPknn = 0;
 %% do select best metric for reranking.
@@ -57,7 +59,7 @@ for i = 1:size(imgClass,1)            % for each query
     end
 
     load(loadName);
-    if size(data, 1) < topN
+    if size(data, 1) < topN          % if data is empty
         disp(['data is empty queryNo=',num2str(queryNo)]);
         disp(loadName);
         continue;
@@ -82,12 +84,11 @@ for i = 1:size(imgClass,1)            % for each query
                                     'k', k, 'scale', scalevalue,...
                                     'method', method,...
                                     'negtag', true);
-    
+    %% do reranking with the best metric
     [rs] = queryRerank(dataSetName, queryNo, 'feature', feature, ...
-                       'MetricModel', MetricModel, 'scale', scalevalue);
-
+                       'MetricModel', MetricModel, 'scale', scalevalue, ...
+                       'range', testrange);
     index = find(map==MetricModel);
-    
     metricAP = rsRerank(i, index + 2);
     
     if rs.metricAP ~= metricAP
