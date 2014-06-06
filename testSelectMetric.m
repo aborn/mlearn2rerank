@@ -11,7 +11,7 @@ clear;
 
 %% basic settings
 disp('start to do select rerank.');
-setpath;
+setInitial;
 dataSetName    = 'webquery';
 dataSetNameNeg = 'msramm';
 imgClass       = get_dataSetInfo(dataSetName, 'imgClass');

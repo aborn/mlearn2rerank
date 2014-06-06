@@ -5,7 +5,7 @@ clc
 clear all;
 clean all;
 setpars;
-setpath;
+setInitial;
 
 %% extract visual feature of training images
 trainDataFeatureExtraction

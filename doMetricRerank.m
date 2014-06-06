@@ -36,7 +36,6 @@ if verbose
     tic;
 end
 
-setpath;
 [s, nameC] = getModelNameList(MetricPath, '.mat');
 imgClass   = get_dataSetInfo(dataSetName, 'imgClass');
 ModelNo    = size(nameC, 1);

@@ -5,7 +5,7 @@
 % featureName CLD  CSD  DCD  EHD  HTD  SCD  gist
 % 2014-06-06
 
-setpath;
+setInitial;
 disp('Start prepare feature data for metric training.');
 dataSetName = 'msramm';
 featureName = 'DCD';  %  DCD  HTD

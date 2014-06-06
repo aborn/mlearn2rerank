@@ -32,7 +32,6 @@ if nargin == 0
 elseif nargin ==1
     queryNo = 1;
 end
-setpath;
 
 %% setting default parameters.
 rs.status = false;

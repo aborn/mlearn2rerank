@@ -5,7 +5,7 @@
 clear all;
 close all;
 
-setpath;
+setInitial;
 dataSetName = 'msramm';
 featureName = 'EHD';
 scale = true;

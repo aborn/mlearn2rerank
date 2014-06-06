@@ -8,7 +8,7 @@ clear all;
 close all;
 disp('Start testDataPre.m');
 
-setpath;
+setInitial;
 dataSetName = 'webquery';
 featureName = 'EHD';  %  DCD  HTD gist
 imgClassNo = get_dataSetInfo(dataSetName, 'imgClassNo');
