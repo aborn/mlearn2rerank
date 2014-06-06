@@ -5,8 +5,9 @@ USAGE.md
 This manual tells you how to use this code step by step.
 
 ## USE THIS CODE
-0. dataFeaPre4ml.m  
-Running this code for extract all images visual feature.
+0. trainDataFeatureExtraction.m  
+Running this code to extract the visual feature of training data. All
+training examples are used the query positive images.
 1. trainDataPre.m  
 Running this code for prepare the training data.
 2. trainModel.m   

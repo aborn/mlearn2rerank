@@ -9,3 +9,4 @@ addpath('/home/aborn/research/code/mlearn/mLMNN2.4/mexfunctions');
 
 addpath('./rerank');
 addpath('./lib');
+addpath('./train');
