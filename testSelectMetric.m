@@ -2,6 +2,7 @@
 % testSelectMetric.m
 % test the performance of selectMetric function
 % please run doMetricRerank.m before running this program.
+% feature: SCD, EHD, gist, CLD,
 % update: 2014-06-05
 %--------------------------------------------------------------------------
 

@@ -50,8 +50,13 @@ if sum(label(1:topN,:)) > topN/2
 end
 
 %% 1. compute the reranking without metric. (knn reranking)
-[rs.topNrankAP, rs.topNknnAP] = knnRerank(pars.k, data(1:topN,:), ...
-                                          label(1:topN,:));
+[ap, rd] = knnRerank(pars.k, data(1:topN,:), label(1:topN,:), true);
+
+rs.topNrankAP = ap.rankAP;
+rs.topNknnAP = ap.rerankAP;
+rerankData = rd.data;
+rerankLabel = rd.label;
+
 [rs.rankAP, rs.knnAP] = knnRerank(pars.k, data, label);
 
 %% 2. reraning with metric with specific model
