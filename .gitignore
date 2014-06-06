@@ -6,3 +6,5 @@ sync.sh
 tmp.m
 *.mat
 kikResult.m
+*MATLAB*
+.#*MATLAB*
