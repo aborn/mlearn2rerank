@@ -22,4 +22,4 @@ Test the best select metric for reranking.
 
 
 ## UPDATE
-2014-05-26 Aborn Jiang (aborn.jiang@foxmail.com)
+2014-06-06 Aborn Jiang (aborn.jiang@foxmail.com)
