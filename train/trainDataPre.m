@@ -1,6 +1,6 @@
 % trainDataPre.m
 % prepare training data for metric learning.
-% all data are saved in ./data/train/
+% all data are saved in ./data/dataSetName/featureName/
 
 clear all;
 close all;
