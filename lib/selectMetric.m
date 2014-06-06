@@ -1,4 +1,5 @@
 function [bestMetric, bestDistM] = selectMetric(MetricPath, data, varargin)
+%--------------------------------------------------------------------------
 % function [bestMetric, bestDistM] = selectMetric(MetricPath, data, varargin)
 % select prefer metric for reranking.
 % input: data -- sampleno-by-dim    sampleno must larger then k
@@ -12,12 +13,11 @@ function [bestMetric, bestDistM] = selectMetric(MetricPath, data, varargin)
 %   negtag = (default false) the last half data as true negative samples
 %            if negtag is true
 %
-%  output: bestMetric  -- the best metric model
+% output: bestMetric  -- the best metric model
 %          bestDistM   -- the distance matrix when using best metric model.
 %
-% version 1.0
-% Date: 2014-04-22   Aborn Jiang(aborn.jiang@foxmail.com)
-%       2014-05-11   Aborn Jiang
+% update:
+%       2014-05-11   Aborn Jiang(aborn.jiang@foxmail.com)
 %--------------------------------------------------------------------------
 
     if nargin == 0
@@ -65,6 +65,7 @@ function [bestMetric, bestDistM] = selectMetric(MetricPath, data, varargin)
             end
         end
     end
+    
     disp(['  best metric = ', num2str(bestMetric), ...
           ' best score = ', num2str(bestScore), ...
          ' method = ', pars.method]);
@@ -72,9 +73,11 @@ end
 
 %% get the metric score
 function score = getMetricScore(distM, method, k, negtag)
+%--------------------------------------------------------------------------
 % the method can be 'std', 'mean', 'normalize', 'rankorder'
 % the smaller the score, the better the metric.
 % the last half samples are true negative if negtag is true
+%--------------------------------------------------------------------------
     NO = size(distM, 1);    % sample number
     scoreList = zeros(NO, 1);
     for j = 1:NO

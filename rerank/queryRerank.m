@@ -9,7 +9,7 @@ function [rs] = queryRerank(dataSetName, queryNo, varargin)
 %   k = (default 5) k-nn (the k-nearest neighboor) value
 %   topN = (default 50) choose topN iamges for test reranking
 %   MetricPath = (default './data/model/featurename') metric model path
-%   MetricModel = (default 1) metric model number
+%   MetricModel = (default E), the transform matrix
 %   best = (default false) whether to find the best metric from all metirc
 %   feature = (default 'gist') feature name.
 %   verbose = (default false) whether to display message output.
@@ -25,6 +25,7 @@ function [rs] = queryRerank(dataSetName, queryNo, varargin)
 %   rs.rankAP         rank average precision (AP)
 %   rs.rerankAP       knn rerank (without metric) average precision (AP)
 %   rs.metricAP       metric rerank average precision (AP)
+%
 % update:
 %   2014-06-05 Aborn Jiang (aborn.jiang@foxmail.com)
 %--------------------------------------------------------------------------
@@ -71,9 +72,7 @@ if pars.scale
 else
     matName=[pars.feature, num2str(queryNo)];
 end    
-
 loadName=sprintf('./data/%s/%s/%s.mat',dataSetName ,pars.feature, matName);
-
 if exist(loadName, 'file')
     load(loadName);
 else
@@ -107,43 +106,19 @@ else
     pause(1000000000000);
 end
 
-%% reraning with metric.
-if pars.best 
-    [rs.bestMetric, bestDistM] = selectMetric(pars.MetricPath, data(1:topN,:),...
-                                              'k', pars.k, 'scale', pars.scale,...
-                                              'method', pars.method);
-    [rs.rankAP, rs.metricAP] = knnRerank(pars.k, bestDistM, ...
-                                         label(1:topN,:), 'best');
-    if pars.verbose
-        disp(['  the best metric = ', num2str(rs.bestMetric)]);
-    end
-else
-    % load specific model
-    if pars.scale
-        modelname = [pars.feature, 'scale', num2str(pars.MetricModel),'.mat'];
-    else
-        modelname = [pars.feature, num2str(pars.MetricModel),'.mat'];
-    end
-    loadMode = ['./data/model/', pars.feature,'/', modelname];
-    if exist(loadMode, 'file')
-        load(loadMode);
-    else
-        disp(['waring: ', loadMode, ' does not exist. skipped.' ]);
-        return;
-    end
-    
-    if strcmp(pars.range, 'topN') == 1
-        labelNew = label(1:topN,:);
-        dataNew = transform(data(1:topN,:), L);
-    elseif strcmp(pars.range, 'all') == 1
-        dataNew = transform(data(:,:), L);   % all data for reranking
-        labelNew = label(:,:);
-    end
-    
-    [rs.rankAP, rs.metricAP] = knnRerank(pars.k, dataNew, labelNew);
-    if pars.verbose
-        disp(['  the current metric = ', num2str(pars.MetricModel)]);
-    end
+%% reraning with metric with specific model
+L = pars.MetricModel;
+if strcmp(pars.range, 'topN') == 1
+    labelNew = label(1:topN,:);
+    dataNew = transform(data(1:topN,:), L);
+elseif strcmp(pars.range, 'all') == 1
+    dataNew = transform(data(:,:), L);   % all data for reranking
+    labelNew = label(:,:);
+end
+
+[rs.rankAP, rs.metricAP] = knnRerank(pars.k, dataNew, labelNew);
+if pars.verbose
+    disp(['  the current metric = ', num2str(pars.MetricModel)]);
 end
 
 rs.status = true;

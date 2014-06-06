@@ -42,8 +42,7 @@ matrix, that is, L. Using transform matrix like Y = L * X, here X is
 dim-by-sampleno. Each coloum of X and Y represents an example image.
 
 
-## Version
-* v1.0 2014-04-27 by Aborn Jiang.
-
+## Update
+* 2014-06-05 by Aborn Jiang (aborn.jiang@foxmail.com)
 
 
