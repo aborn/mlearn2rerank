@@ -16,7 +16,7 @@ function [rs] = queryRerank(data, label, MetricModel, varargin)
 %            can be 'mean', 'std', 'normalize', 'rankorder'
 %
 % output:
-%   rs.status 
+%   rs.status         status = true if success.
 %   rs.good  = true  if the number of positive samep more then negitn in topN
 %   rs.rankAP         rank average precision (AP)
 %   rs.rerankAP       knn rerank (without metric) average precision (AP)
