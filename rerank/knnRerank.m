@@ -1,4 +1,5 @@
 function [rankAP, rerankAP] = knnRerank(k,data,label,tag)
+%--------------------------------------------------------------------------
 % using knn to rerank the initial ranking images.
 % input: k  -- k nearest neighboor
 %        data -- sampeleno*dim test sample data  (defalut)
@@ -7,13 +8,15 @@ function [rankAP, rerankAP] = knnRerank(k,data,label,tag)
 %        
 % output: rankAP  -- original rank average precision
 %         rerankAP -- the rerank average precision.
-% Aborn Jiang (aborn.jiang@foxmail.com)
-% 2014-04-22
+%
+% update:
+%   2014-06-06 Aborn Jiang (aborn.jiang@foxmail.com)
+%--------------------------------------------------------------------------
 
     if nargin < 4
         tag = 'any';
     end
-    rankAP = cal_AP(label);
+    rankAP = calAP(label);
     if strcmp(tag, 'best') == 1
         distM = data;
     else
@@ -29,3 +32,4 @@ function [rankAP, rerankAP] = knnRerank(k,data,label,tag)
     end
     sortScoreM = sortrows(scoreM, 1);
     rerankAP = cal_AP(sortScoreM(:,2));
+end

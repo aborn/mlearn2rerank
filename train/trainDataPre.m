@@ -15,7 +15,7 @@ labels = get_dataSetInfo(dataSetName,'labels2');
 ss = [];
 dataOther = [];
 labelOther = [];
-% 注意：数据的归一化
+% note: for the data normalization
 eachOtherNumber = 10;    % for other kind, sample 10 each.
 posSampleNumber = 500;
 unadaptQueryNo = 0;

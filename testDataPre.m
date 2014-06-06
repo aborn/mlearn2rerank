@@ -10,7 +10,7 @@ disp('Start testDataPre.m');
 
 setpath;
 dataSetName = 'webquery';
-featureName = 'SCD';  %  DCD  HTD gist
+featureName = 'EHD';  %  DCD  HTD gist
 imgClassNo = get_dataSetInfo(dataSetName, 'imgClassNo');
 imgClass = get_dataSetInfo(dataSetName, 'imgClass');
 labels = get_dataSetInfo(dataSetName,'labels2');
@@ -22,7 +22,6 @@ for i=1:size(labels,1)
     end
 end
 
-%
 for i = 1:size(imgClass,1)              % for each query
     iLabels = labels(labels(:,1)==i,:);
     featureI = [];
@@ -36,15 +35,13 @@ for i = 1:size(imgClass,1)              % for each query
         else
             featureI = [featureI; fea];
             labelI = [labelI; iLabels(j, 3)];
-            % disp(['i=', num2str(i), ' j=', num2str(j), '   left=', ...
-            %       num2str(size(iLabels,1) - j)])
         end
     end
     matName=[featureName, num2str(imgClass(i,1))];
     data = featureI;
     label = labelI;
-    saveName=sprintf('./data/%s/%s/%s.mat',dataSetName ,featureName, ...
-                     matName);
+    saveName=sprintf('./data/%s/%s/%s.mat',dataSetName ,...
+                     featureName, matName);
     save(saveName, 'data', 'label');
     
     if scale

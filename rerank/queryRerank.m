@@ -14,8 +14,6 @@ function [rs] = queryRerank(data, label, MetricModel, varargin)
 
 %   method = (default 'rankorder') the select metric method.
 %            can be 'mean', 'std', 'normalize', 'rankorder'
-%   range = (default 'topN) query image test range, default only test topN
-%            can be 'all'      test all query images.
 %
 % output:
 %   rs.status 
@@ -43,7 +41,6 @@ rs.good   = false;
 pars.k = 5;
 pars.topN = 50;
 pars.method  = 'rankorder';
-pars.range   = 'topN';
 pars = extractpars(varargin,pars);     % extract parameters.
 rs.pars = pars;
 topN  = pars.topN;
@@ -54,14 +51,9 @@ if sum(label(1:topN,:)) > topN/2
 end
 
 %% 1. compute the reranking without metric. (knn reranking)
-if strcmp(pars.range, 'topN') == 1
-    [~, rs.rerankAP] = knnRerank(pars.k, data(1:topN,:), label(1:topN,:));
-elseif strcmp(pars.range, 'all') == 1
-    [~, rs.rerankAP] = knnRerank(pars.k, data(1:end,:), label(1:end,:));
-else
-    disp('pars.range can only be ''topN'' or ''all'' ');
-    pause(1000000000000);
-end
+[~, rs.rerankAP] = knnRerank(pars.k, data(1:topN,:), label(1:topN,:));
+[~, rs.rerankAP] = knnRerank(pars.k, data(1:end,:), label(1:end,:));
+
 
 %% 2. reraning with metric with specific model
 if strcmp(pars.range, 'topN') == 1
