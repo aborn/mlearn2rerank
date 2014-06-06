@@ -7,7 +7,7 @@
 disp('Start prepare feature data for metric learning.');
 setpath;
 dataSetName = 'msramm';
-featureName = 'HTD';  %  DCD  HTD
+featureName = 'DCD';  %  DCD  HTD
 imgClassNo = get_dataSetInfo(dataSetName,'imgClassNo');
 imgClass = get_dataSetInfo(dataSetName, 'imgClass');
 labels = get_dataSetInfo(dataSetName,'labels2');
