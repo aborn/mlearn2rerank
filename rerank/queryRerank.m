@@ -50,18 +50,16 @@ if sum(label(1:topN,:)) > topN/2
 end
 
 %% 1. compute the reranking without metric. (knn reranking)
-[~, rs.rerankAP] = knnRerank(pars.k, data(1:topN,:), label(1:topN,:));
-[~, rs.rerankAP] = knnRerank(pars.k, data(1:end,:), label(1:end,:));
-
+[rs.topNrankAP, rs.topNknnAP] = knnRerank(pars.k, data(1:topN,:), ...
+                                          label(1:topN,:));
+[rs.rankAP, rs.knnAP] = knnRerank(pars.k, data, label);
 
 %% 2. reraning with metric with specific model
-if strcmp(pars.range, 'topN') == 1
-    labelNew = label(1:topN,:);
-    dataNew = transform(data(1:topN,:), MetricModel);
-elseif strcmp(pars.range, 'all') == 1
-    dataNew = transform(data(:,:), MetricModel);   % all data for reranking
-    labelNew = label(:,:);
-end
-[rs.rankAP, rs.metricAP] = knnRerank(pars.k, dataNew, labelNew);
+labelNew = label(1:topN,:);
+dataNew = transform(data(1:topN,:), MetricModel);
+[~, rs.topNmetricAP] = knnRerank(pars.k, dataNew, labelNew);
 
+dataNew = transform(data, MetricModel);   % all data for reranking
+labelNew = label;
+[~, rs.metricAP] = knnRerank(pars.k, dataNew, labelNew);
 rs.status = true;

@@ -1,4 +1,4 @@
-function [rankAP, rerankAP] = knnRerank(k,data,label,tag)
+function [ap, rd] = knnRerank(k,data,label)
 %--------------------------------------------------------------------------
 % using knn to rerank the initial ranking images.
 % input: k  -- k nearest neighboor
@@ -13,15 +13,8 @@ function [rankAP, rerankAP] = knnRerank(k,data,label,tag)
 %   2014-06-06 Aborn Jiang (aborn.jiang@foxmail.com)
 %--------------------------------------------------------------------------
 
-    if nargin < 4
-        tag = 'any';
-    end
     rankAP = calAP(label);
-    if strcmp(tag, 'best') == 1
-        distM = data;
-    else
-        distM = get_distM(data);  % distance matrix
-    end
+    distM = getDistanceMatrix(data);  % distance matrix
     
     scoreM = zeros(size(data,1), 2);
     for i = 1:size(data,1)
@@ -31,5 +24,8 @@ function [rankAP, rerankAP] = knnRerank(k,data,label,tag)
         scoreM(i, 2) = label(i,1);
     end
     sortScoreM = sortrows(scoreM, 1);
-    rerankAP = cal_AP(sortScoreM(:,2));
+    rerankAP = calAP(sortScoreM(:, 2));
+    ap.rankAP = rankAP;
+    ap.rerankAP = rerankAP;
+    rd.
 end

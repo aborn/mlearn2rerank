@@ -10,7 +10,7 @@ disp('Start testDataPre.m');
 
 setInitial;
 dataSetName = 'webquery';
-featureName = 'EHD';  %  DCD  HTD gist
+featureName = 'CLD';  %  DCD  HTD gist
 imgClassNo = get_dataSetInfo(dataSetName, 'imgClassNo');
 imgClass = get_dataSetInfo(dataSetName, 'imgClass');
 labels = get_dataSetInfo(dataSetName,'labels2');
