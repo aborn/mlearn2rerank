@@ -51,14 +51,13 @@ end
 
 %% 1. compute the reranking without metric. (knn reranking)
 [ap, rd] = knnRerank(pars.k, data(1:topN,:), label(1:topN,:), true);
-
 rs.topNrankAP = ap.rankAP;
 rs.topNknnAP = ap.rerankAP;
 rerankData = rd.data;
 rerankLabel = rd.label;
 
 [rs.rankAP, rs.knnAP] = knnRerank(pars.k, data, label);
-
+[rs.exemplarAP] = exemplarRerank(rerankData(1:pars.topN/2,:), data, label);
 %% 2. reraning with metric with specific model
 labelNew = label(1:topN,:);
 dataNew = transform(data(1:topN,:), MetricModel);
