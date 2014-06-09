@@ -12,18 +12,21 @@ function [rs] = queryRerank(data, label, MetricModel, varargin)
 %   k = (default 5) k-nn (the k-nearest neighboor) value
 %   topN = (default 50) choose topN iamges for test reranking
 
-%   method = (default 'rankorder') the select metric method.
-%            can be 'mean', 'std', 'normalize', 'rankorder'
+%   method = (default 'mean') exemplarRerank method
+%            can be 'mean', 'min', 'max'
 %
 % output:
 %   rs.status         status = true if success.
 %   rs.good  = true  if the number of positive samep more then negitn in topN
-%   rs.rankAP         rank average precision (AP)
-%   rs.rerankAP       knn rerank (without metric) average precision (AP)
-%   rs.metricAP       metric rerank average precision (AP)
+%   rs.x.topNrankAP
+%       .topNrerankAp
+%       .rankAP
+%       .rerankAP
+%       .exemplarAP
+%                            x metric or nonmetric
 %
 % update:
-%   2014-06-06 Aborn Jiang (aborn.jiang@foxmail.com)
+%   2014-06-07 Aborn Jiang (aborn.jiang@foxmail.com)
 %--------------------------------------------------------------------------
 
 if nargin == 0
@@ -39,10 +42,11 @@ rs.good   = false;
 
 pars.k = 5;
 pars.topN = 50;
-pars.method  = 'rankorder';
+pars.method  = 'mean';
 pars = extractpars(varargin,pars);     % extract parameters.
 rs.pars = pars;
 topN  = pars.topN;
+method = pars.method;
 
 %% whether the positive number is more then negative
 if sum(label(1:topN,:)) > topN/2
@@ -51,19 +55,26 @@ end
 
 %% 1. compute the reranking without metric. (knn reranking)
 [ap, rd] = knnRerank(pars.k, data(1:topN,:), label(1:topN,:), true);
-rs.topNrankAP = ap.rankAP;
-rs.topNknnAP = ap.rerankAP;
+rs.nonmetric.topNrankAP = ap.rankAP;
+rs.nonmetric.topNrerankAP = ap.rerankAP;
 rerankData = rd.data;
 rerankLabel = rd.label;
 
-[rs.rankAP, rs.knnAP] = knnRerank(pars.k, data, label);
-[rs.exemplarAP] = exemplarRerank(rerankData(1:pars.topN/2,:), data, label);
-%% 2. reraning with metric with specific model
-labelNew = label(1:topN,:);
-dataNew = transform(data(1:topN,:), MetricModel);
-[~, rs.topNmetricAP] = knnRerank(pars.k, dataNew, labelNew);
+[rs.nonmetric.rankAP, rs.nonmetric.rerankAP] = knnRerank(pars.k, data, label);
+exemNo = floor(pars.topN/2);
+[rs.nonmetric.exemplarAP] = exemplarRerank(rerankData(1:exemNo,:), ...
+                                           data, label, method);
 
-dataNew = transform(data, MetricModel);   % all data for reranking
+%% 2. reraning with metric with specific model
 labelNew = label;
-[~, rs.metricAP] = knnRerank(pars.k, dataNew, labelNew);
+dataNew = transform(data, MetricModel);
+[ap, rd] = knnRerank(pars.k, dataNew(1:topN,:), labelNew(1:topN,:), true);
+rs.metric.topNrankAP = ap.rankAP;
+rs.metric.topNrerankAP = ap.rerankAP;
+rerankData = rd.data;
+rerankLabel = rd.label;
+
+[rs.metric.rankAP, rs.metric.rerankAP] = knnRerank(pars.k, dataNew, labelNew);
+[rs.metric.exemplarAP] = exemplarRerank(rerankData(1:exemNo,:), dataNew, ...
+                                    labelNew, method);
 rs.status = true;

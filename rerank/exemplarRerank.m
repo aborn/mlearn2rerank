@@ -16,6 +16,9 @@ function [ap]=exemplarRerank(exemData, data, label, method)
 %  update:
 %    2014-06-06  Aborn Jiang (aborn.jiang@foxmail.com)
 %--------------------------------------------------------------------------
+    if nargin < 4
+        method = 'mean';
+    end
     score = zeros(size(label,1), 2);
     score(:, 2) = label;
     for i = 1:size(data, 1)
@@ -34,12 +37,13 @@ function distance = getDistance(exemData, sample, method)
         distVect(i,1) = sum((exemData(i,:) - sample).^2)^0.5;
     end
     
-    switch method
-      case 'min'
+    if strcmp(method, 'min')==1
         distance = min(distVect);
-      case 'mean'
+    elseif strcmp(method, 'mean')==1
         distance = mean(distVect);
-      case 'max'
+    elseif strcmp(method, 'max')==1
         distance = max(distVect);
+    else
+        distance = -1;
     end
 end

@@ -17,8 +17,8 @@ dataSetName    = 'webquery';
 dataSetNameNeg = 'msramm';
 imgClass       = get_dataSetInfo(dataSetName, 'imgClass');
 
-%feature = 'gist';
-feature = 'SCD';
+%feature = 'CLD';
+%feature = 'SCD';
 testrange='all';
 % testrange='topN';
 MetricPath = ['data/model/',feature,'/'];              
@@ -35,12 +35,12 @@ else
     metricRerankRS = ['mat/',dataSetName,'_',feature,'.mat'];
     loadName = ['./data/negative/',dataSetNameNeg,'_',feature,'.mat'];
 end
-load(metricRerankRS);    % reranking results
+%load(metricRerankRS);    % reranking results
 load(loadName);          % negative samples
 
-rsRerank = rs.rsRerank;
+%rsRerank = rs.rsRerank;
 improved = 0;
-map   = rs.map;
+%map   = rs.map;
 expNO = 0;               % experiment number
 
 totalAPrank = 0;         % use for calculate mAP
@@ -48,6 +48,8 @@ totalAPmetric = 0;
 totalAPknn = 0;
 apALL = zeros(size(imgClass,1), 4);
 
+nonmetricAP = zeros(size(imgClass,1), 6);
+metricAP    = zeros(size(imgClass,1), 6);
 %% do select best metric for reranking.
 for i = 1:size(imgClass,1)            % for each query
     queryNo = imgClass(i,1);
@@ -84,31 +86,45 @@ for i = 1:size(imgClass,1)            % for each query
     expNO = expNO + 1;
     
     %% do reranking with the best metric
-    [rs] = queryRerank(data, label, MetricModel,...
-                       'range', testrange, ...
-                       'topN', topN);
-    index = find(map==MetricNo);
-    metricAP = rsRerank(i, index + 2);
+    rerankmethod = 'min';
+    [rs] = queryRerank(data, label, MetricModel, ...
+                       'topN', topN, 'method', rerankmethod);
+    metricAP(i,1) = queryNo;
+    metricAP(i,2) = rs.metric.topNrankAP;
+    metricAP(i,3) = rs.metric.topNrerankAP;
+    metricAP(i,4) = rs.metric.rankAP;
+    metricAP(i,5) = rs.metric.rerankAP;
+    metricAP(i,6) = rs.metric.exemplarAP;
+
+    nonmetricAP(i,1) = queryNo;
+    nonmetricAP(i,2) = rs.nonmetric.topNrankAP;
+    nonmetricAP(i,3) = rs.nonmetric.topNrerankAP;
+    nonmetricAP(i,4) = rs.nonmetric.rankAP;
+    nonmetricAP(i,5) = rs.nonmetric.rerankAP;
+    nonmetricAP(i,6) = rs.nonmetric.exemplarAP;
+    
+    % index = find(map==MetricNo);
+    % metricAP = rsRerank(i, index + 2);
     
     % if rs.metricAP ~= metricAP
     %     disp(['fatal error, metric AP doesnot match.'])
     % end
     
-    if rs.metricAP > rs.rankAP && rs.metricAP > rs.rerankAP
+    if rs.metric.rerankAP > rs.metric.rankAP 
         improved = improved + 1;
     end
 
     apALL(expNO,1) = queryNo;
-    apALL(expNO,2) = rs.rankAP;
-    apALL(expNO,3) = rs.rerankAP;
-    apALL(expNO,4) = rs.metricAP;
-    totalAPrank = totalAPrank + rs.rankAP;
-    totalAPknn = totalAPknn + rs.rerankAP;
-    totalAPmetric = totalAPmetric + rs.metricAP;
+    apALL(expNO,2) = rs.metric.rankAP;
+    apALL(expNO,3) = rs.metric.rerankAP;
+    apALL(expNO,4) = rs.metric.exemplarAP;
+    totalAPrank = totalAPrank + rs.metric.rankAP;
+    totalAPknn = totalAPknn + rs.metric.rerankAP;
+    totalAPmetric = totalAPmetric + rs.metric.exemplarAP;
     
-    disp(['***  mAP rank = ', num2str(totalAPrank/expNO), ...
-          '*** mAP knn =', num2str(totalAPknn/expNO), ...
-          '   *** mAP metric=', num2str(totalAPmetric/expNO)]);
+    disp(['***  metric rank map = ', num2str(totalAPrank/expNO), ...
+          '*** metric rerank map=', num2str(totalAPknn/expNO)])
+    disp(['   *** metric exemplarAP map =', num2str(totalAPmetric/expNO)]);
     disp(['i=', num2str(i), '  left=', num2str(size(imgClass,1)-i), ...
           ' Model=', num2str(MetricNo)]);
     
@@ -132,3 +148,7 @@ for i=2:4
     abc(:,2)=apALL(:,i);
     calMAP(abc);
 end
+
+saveName=['testSelectMetric_',feature,'.mat']
+save(saveName);
+toc;

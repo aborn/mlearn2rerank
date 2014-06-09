@@ -7,7 +7,7 @@ close all;
 
 setInitial;
 dataSetName = 'msramm';
-featureName = 'EHD';
+featureName = 'CLD';
 scale = true;
 imgClass = get_dataSetInfo(dataSetName, 'imgClass');
 labels = get_dataSetInfo(dataSetName,'labels2');

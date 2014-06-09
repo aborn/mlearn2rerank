@@ -11,7 +11,7 @@ clear;
 dataset = 'msramm';
 except  = -1;
 scale = true;
-featureName = 'SCD';
+featureName = 'CLD';
 queryNO = 68;          % only for 'msramm'
 
 data = [];

@@ -51,7 +51,7 @@ function [bestMetric, bestDistM] = selectMetric(MetricPath, data, varargin)
         load(loadName);
 
         dataNew = transform(data, L);
-        distM = get_distM(dataNew);
+        distM = getDistanceMatrix(dataNew);
         currentScore = getMetricScore(distM, pars.method, pars.k, pars.negtag);
         if i == 1
             bestScore = currentScore;
