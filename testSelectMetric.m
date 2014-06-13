@@ -149,6 +149,7 @@ for i=2:4
     calMAP(abc);
 end
 
-saveName=['testSelectMetric_',feature,'.mat']
-save(saveName);
+% saveName=['testSelectMetric_',feature,'.mat']
+% save(saveName);
+
 toc;
