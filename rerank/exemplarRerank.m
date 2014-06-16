@@ -1,4 +1,4 @@
-function [ap]=exemplarRerank(exemData, data, label, method)
+function [rdata, rlabel]=exemplarRerank(exemData, data, label, method)
 %--------------------------------------------------------------------------
 %  function exemplarRerank(exemData, data, label)
 %     exemplar reranking method: choose the exemplar samples as positive
@@ -10,28 +10,30 @@ function [ap]=exemplarRerank(exemData, data, label, method)
 %     label      --- query data label, m-by-1
 %     method     --- the reranking method
 %                can be value 'min' 'max' 'mean'
-%  output:
-%     ap         --- the average percision
-%
+% output: 
+%     rdata     --- the reranking sample data  m-by-n
+%     rlabel    --- the reranking sample label info m-by-1
 %  update:
-%    2014-06-06  Aborn Jiang (aborn.jiang@foxmail.com)
+%    2014-06-13  Aborn Jiang (aborn.jiang@foxmail.com)
 %--------------------------------------------------------------------------
     if nargin < 4
         method = 'mean';
     end
-    score = zeros(size(label,1), 2);
-    score(:, 2) = label;
+    m = size(data, 1); n = size(data, 2);
+    score = zeros(m, n+2);
+    score(:, 2) = label;              % label information
+    score(:, 3:end) = data;           % data information
     for i = 1:size(data, 1)
         sample = data(i, :);
         score(i, 1) = getDistance(exemData, sample, method);
     end
     sortScore = sortrows(score, 1);
-    ap = calAP(sortScore(:, 2));
+    rdata = sortScore(:, 3:end);
+    rlabel = sortScore(:, 2);
 end
 
-
+%% get the distance between a sample and exemData
 function distance = getDistance(exemData, sample, method)
-% get the distance between a sample and exemData
     distVect = zeros(size(exemData, 1), 1);
     for i=1:size(exemData, 1)
         distVect(i,1) = sum((exemData(i,:) - sample).^2)^0.5;

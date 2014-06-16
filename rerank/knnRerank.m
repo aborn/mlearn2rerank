@@ -24,5 +24,5 @@ function [rdata, rlabel] = knnRerank(k,data,label)
     end
     sortScoreM = sortrows(scoreM, 1);
     rdata = sortScoreM(:, 3:end);
-    rlabel = sortScoreM(:, )
+    rlabel = sortScoreM(:, 2);
 end

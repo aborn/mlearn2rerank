@@ -1,14 +1,17 @@
+function testSelectMetric(feature, topN)
 %--------------------------------------------------------------------------
 % testSelectMetric.m
+% input: feature  -- feature name
+%        topN     -- N value
 % test the performance of selectMetric function
 % please run doMetricRerank.m before running this program.
 % feature: SCD, EHD, gist, CLD,
-% update: 2014-06-05
+% update: 2014-06-13
 %--------------------------------------------------------------------------
 
 tic;
-clc;
-clear;
+% clc;
+% clear;
 
 %% basic settings
 disp('start to do select rerank.');
@@ -19,10 +22,8 @@ imgClass       = get_dataSetInfo(dataSetName, 'imgClass');
 
 %feature = 'CLD';
 %feature = 'SCD';
-testrange='all';
-% testrange='topN';
 MetricPath = ['data/model/',feature,'/'];              
-topN = 50;
+%topN = 50;
 scalevalue = true;
 method = 'std';
 k = 5;
@@ -116,8 +117,9 @@ for i = 1:size(imgClass,1)            % for each query
 
     apALL(expNO,1) = queryNo;
     apALL(expNO,2) = rs.metric.rankAP;
-    apALL(expNO,3) = rs.metric.rerankAP;
-    apALL(expNO,4) = rs.metric.exemplarAP;
+    apALL(expNO,3) = rs.nonmetric.rerankAP;
+    apALL(expNO,4) = rs.metric.rerankAP;
+    apALL(expNO,5) = rs.metric.exemplarAP;
     totalAPrank = totalAPrank + rs.metric.rankAP;
     totalAPknn = totalAPknn + rs.metric.rerankAP;
     totalAPmetric = totalAPmetric + rs.metric.exemplarAP;
@@ -134,6 +136,8 @@ for i = 1:size(imgClass,1)            % for each query
     disp('++++++++++++++++++++++++++++++');
 end
 
+disp('\n------------------------------');
+disp(['feature:',feature,' results list:']);
 percent = improved / expNO;
 disp(['percent=', num2str(percent), '  improved=', num2str(improved), ...
       ' experiment number=', num2str(expNO)]);
@@ -144,12 +148,21 @@ disp(['experimental queries=',num2str(size(apALL,1))]);
 
 abc = zeros(size(apALL,1), 2);
 abc(:,1)=apALL(:,1);
-for i=2:4
+for i=2:5
+    if i==2
+        disp('rank result:');
+    elseif i==3
+        disp('rerank non-metric:');
+    elseif i==4
+        disp('rerank metric:');
+    elseif i==5
+        disp('rerank metric exemplar:');
+    end
     abc(:,2)=apALL(:,i);
     calMAP(abc);
 end
 
-% saveName=['testSelectMetric_',feature,'.mat']
-% save(saveName);
+saveName=['testSelectMetric_',feature,'.mat'];
+save(saveName);
 
 toc;

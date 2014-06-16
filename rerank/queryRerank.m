@@ -44,6 +44,7 @@ function [rs] = queryRerank(data, label, MetricModel, varargin)
     pars    = extractpars(varargin,pars);     % extract parameters.
     rs.pars = pars;
     topN    = pars.topN;
+    exemNo = floor(pars.topN/2);
     method  = pars.method;
 
     %% whether the positive number is more then negative
@@ -53,27 +54,30 @@ function [rs] = queryRerank(data, label, MetricModel, varargin)
 
     %% 1. compute the reranking without metric. (knn reranking)
     [rdata, rlabel] = knnRerank(pars.k, data(1:topN,:), label(1:topN,:));
-    rs.nonmetric.topNrankAP = ap.rankAP;
-    rs.nonmetric.topNrerankAP = ap.rerankAP;
-    rerankData = rd.data;
-    rerankLabel = rd.label;
+    rs.nonmetric.topNrankAP = calAP(label(1:exemNo, 1));
+    rs.nonmetric.topNrerankAP = calAP(rlabel(1:exemNo, 1));
 
-    [rs.nonmetric.rankAP, rs.nonmetric.rerankAP] = knnRerank(pars.k, data, label);
-    exemNo = floor(pars.topN/2);
-    [rs.nonmetric.exemplarAP] = exemplarRerank(rerankData(1:exemNo,:), ...
-                                               data, label, method);
+    [rdata, rlabel] = knnRerank(pars.k, data, label);
+    rs.nonmetric.rankAP = calAP(label);
+    rs.nonmetric.rerankAP = calAP(rlabel);
+    
+    [rdata, rlabel] = exemplarRerank(rdata(1:exemNo,:), ...
+                                     data, label, method);
+    rs.nonmetric.exemplarAP = calAP(rlabel);
 
     %% 2. reraning with metric with specific model
     labelNew = label;
     dataNew = transform(data, MetricModel);
-    [ap, rd] = knnRerank(pars.k, dataNew(1:topN,:), labelNew(1:topN,:), true);
-    rs.metric.topNrankAP = ap.rankAP;
-    rs.metric.topNrerankAP = ap.rerankAP;
-    rerankData = rd.data;
-    rerankLabel = rd.label;
+    [rdata, rlabel] = knnRerank(pars.k, dataNew(1:topN,:), labelNew(1:topN,:));
+    rs.metric.topNrankAP = calAP(labelNew(1:exemNo, 1));
+    rs.metric.topNrerankAP = calAP(rlabel(1:exemNo, 1));
 
-    [rs.metric.rankAP, rs.metric.rerankAP] = knnRerank(pars.k, dataNew, labelNew);
-    [rs.metric.exemplarAP] = exemplarRerank(rerankData(1:exemNo,:), dataNew, ...
-                                            labelNew, method);
+    [rdata, rlabel] = knnRerank(pars.k, dataNew, labelNew);
+    rs.metric.rankAP = calAP(labelNew);
+    rs.metric.rerankAP = calAP(rlabel);
+    
+    [rdata, rlabel] = exemplarRerank(rdata(1:exemNo,:), dataNew, ...
+                                     labelNew, method);
+    rs.metric.exemplarAP = calAP(rlabel);
     rs.status = true;
 end
